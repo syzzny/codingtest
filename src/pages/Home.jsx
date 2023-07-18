@@ -39,31 +39,26 @@ export default function Home() {
     const generatePageNumbers = () => {
         const totalPages = Math.ceil(listData.total / 6);
         const pageNumbers = [];
-
+    
         if (totalPages <= 6) {
             for (let i = 1; i <= totalPages; i++) {
                 pageNumbers.push(i);
             }
         } else {
-            let startPage = currentPage - 2;
-            let endPage = currentPage + 3;
-
-            if (startPage < 1) {
-                startPage = 1;
-                endPage = 6;
-            } else if (endPage > totalPages) {
-                startPage = totalPages - 5;
-                endPage = totalPages;
-            }
-
+            let startPage = currentPage <= 6 ? 1 : (Math.floor((currentPage - 1) / 6) * 6 + 1);
+            let endPage = startPage + 5;
+    
+            startPage = startPage < 1 ? 1 : startPage;
+            endPage = endPage > totalPages ? totalPages : endPage;
+    
             for (let i = startPage; i <= endPage; i++) {
                 pageNumbers.push(i);
             }
         }
-
+    
         return pageNumbers;
     };
-
+    
     return (
         <div>
             <p>Notice List</p>
