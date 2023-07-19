@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Title, Wrap, ListItem, List, GoInfo, ButtonWrap, Button } from '../pages/styles/StyleComp'
+import { Title, Wrap, TitleWrap, ListItem, List, GoInfo, DateInfo, ButtonWrap, Button, NewPost, ButtonArrow } from '../pages/styles/StyleComp'
 import { Link } from 'react-router-dom';
 
 
@@ -10,6 +10,12 @@ export default function Home() {
     const [startRow, setStartRow] = useState(1);
     // currentPage : 현재 페이지 번호
     const [currentPage, setCurrentPage] = useState(1);
+
+    const [isSelected, setIsSelected] = useState(false);
+
+    const handleClick = () => {
+        setIsSelected(!isSelected);
+    }
 
     // API에서 데이터를 가져와서 listData 상태를 업데이트 하는 useEffect
     useEffect(() => {
@@ -78,39 +84,51 @@ export default function Home() {
 
     return (
         <Wrap>
-            <Title>Notice List</Title>
+            <TitleWrap>
+                <Title>Notice List</Title>
+                <Link to={'/create'}>
+                    <NewPost>+ New Post</NewPost>
+                </Link>
+            </TitleWrap>
             <List>
                 {listData.map(item => (
                     <GoInfo to={`/detail/${item.idx}`}>
                         <ListItem key={item.idx}>
                             <p>{item.title}</p>
-                            <p>{item.createAt}</p>
+                            <DateInfo>
+                                {item.modifyAt ? (
+                                    <p>{item.modifyAt}</p>
+                                ) : (
+                                    <p>{item.createAt}</p>
+                                )}
+                            </DateInfo>
                         </ListItem>
                     </GoInfo>
                 ))}
             </List>
 
             <ButtonWrap>
-            {/* 이전 데이터 로드 버튼 */}
-            <Button onClick={handleLoadPrevious} disabled={startRow <= 1}>
-                👈
-            </Button>
+                {/* 이전 데이터 로드 버튼 */}
+                <ButtonArrow onClick={handleLoadPrevious} disabled={startRow <= 1}>
+                    <img src="../assets/img/prev.png" alt="" />
+                </ButtonArrow>
 
-            {/* 페이지 번호 */}
-            {generatePageNumbers().map(pageNumber => (
-                <Button
-                    key={pageNumber}
-                    onClick={() => handlePageChange(pageNumber)}
-                    disabled={pageNumber === currentPage}
-                >
-                    {pageNumber}
-                </Button>
-            ))}
+                {/* 페이지 번호 */}
+                {generatePageNumbers().map(pageNumber => (
+                    <Button
+                        isSelected={isSelected}
+                        key={pageNumber}
+                        onClick={() => handlePageChange(pageNumber)}
+                        disabled={pageNumber === currentPage}
+                    >
+                        {pageNumber}
+                    </Button>
+                ))}
 
-            {/* 더 많은 데이터 로드 버튼 */}
-            <Button onClick={handleLoadMore}>
-                👉
-            </Button>
+                {/* 더 많은 데이터 로드 버튼 */}
+                <ButtonArrow onClick={handleLoadMore}>
+                    <img src="../assets/img/next.png" alt="" />
+                </ButtonArrow>
             </ButtonWrap>
         </Wrap>
     );
