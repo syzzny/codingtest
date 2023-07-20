@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useParams, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Wrap, Title, TitleWrap, CreateForm, CreateLabel, Guide ,InputStyle, TestAreaStyle, CreateButton} from '../pages/styles/StyleComp'
 
 
 export default function Modify() {
-    const { idx } = useParams();
+    // 이전 페이지에서 전달받은 데이터를 사용하기 위해 현재 경로 정보 가져오기
     const location = useLocation();
     const navigate = useNavigate();
     
+    // locaton.state를 초기값으로 설정
     const [formData, setFormData] = useState(
         location.state
     );
 
+    // 폼에서 입력한 값이 변경될 때마다 호출되는 이벤트 핸들러
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -19,6 +21,8 @@ export default function Modify() {
         });
     };
 
+
+    // 폼이 제출될때 호출되는 이벤트 핸들러
     const handleSubmit = (e) => {
         e.preventDefault();
         
@@ -26,9 +30,11 @@ export default function Modify() {
         // 수정 처리 로직 작성
         fetch(`https://dev.safeean.com:63101/test/post`, {
             method: 'PUT',
+            // JSON 형식의 데이터를 보내고 있다고 알려줌
             headers: {
                 'Content-Type': 'application/json'
             },
+            // formData 객체를 JSON 문자열로 변환하여 본문으로 포함
             body: JSON.stringify(formData)
         })
         .then(response => response.json())
@@ -36,12 +42,13 @@ export default function Modify() {
             // 수정 완료 후 처리 로직
             console.log(data);
             navigate(-1)
+            alert('수정이 완료되었습니다');
         })
         .catch(error => {
             // 에러 처리 로직
             console.error(error);
         });
-        alert('수정이 완료되었습니다');
+        
     };
 
     return (
